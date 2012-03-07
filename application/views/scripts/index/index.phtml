@@ -1,0 +1,41 @@
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#linkform").validate({
+        rules:{
+            link:{
+                required: true,
+                url: true
+            }
+        },
+        messages:{
+            link:{
+                required: "<i class='icon-exclamation-sign'></i><font color='red'> Brak linku.</font>",
+                url: "<i class='icon-exclamation-sign'></i><font color='red'> Podaj poprawny adres strony.</font>"
+            }
+        }
+    })
+    
+});
+
+
+</script>
+<style type="text/css">
+    #link{
+        height: 40px;
+        width: 98%;
+        font-size: 29px
+    }
+</style>
+
+<? 
+    $this->link->setAttrib('id', 'linkform')
+        ->setAttrib('class', 'well');
+    
+    $this->link->submit->setAttrib('class','btn btn-large btn-primary');
+    
+    echo $this->link;
+?>
+
+     
+

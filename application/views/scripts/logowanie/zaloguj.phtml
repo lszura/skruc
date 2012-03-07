@@ -1,0 +1,68 @@
+<?
+if(!Zend_Auth::getInstance()->hasIdentity()){
+    $this->form->email->setAttrib('placeholder','Email');
+    $this->form->haslo->setAttrib('placeholder','Hasło');
+    $this->form->remember->setAttrib('class','zapamietaj');
+    $this->form->Zaloguj->setAttrib('class','btn-info');
+    $this->form->setAttrib('class', 'form-inline pull-right');
+    $this->form->setDecorators(array(
+            'FormElements',
+            'Form'
+        ));
+    $this->form->email->removeDecorator('Label');
+    $this->form->haslo->removeDecorator('Label');
+    $this->form->remember->removeDecorator('Label');
+    $this->form->email->removeDecorator('HtmlTag');
+    $this->form->haslo->removeDecorator('HtmlTag');
+    $this->form->remember->removeDecorator('HtmlTag');
+    $this->form->Zaloguj->removeDecorator('DtDdWrapper');
+    echo $this->form;
+}else{
+    echo "<div class=\"pull-right nav-collapse\">
+            <ul class=\"nav\">
+                <li class=\"active\">
+                <a>";
+    echo Zend_Auth::getInstance()->getIdentity()->email;
+    echo "</a></li>
+                <li>
+                <a data-toggle=\"modal\" href=\"#myModal\">Zmień hasło</a>
+                </li>                
+                <li>
+                <a href=\"/public/logowanie/wyloguj\">Wyloguj</a>
+                </li>
+        </ul>
+        </div>
+        ";
+}
+
+   
+
+?>
+<script type="text/javascript">
+    $().ready(function(){
+        $('.form-inline').mousemove(function(){
+            $('.tooltip-inner').css('background-color','red');
+            $('.zapamietaj').tooltip({
+            placement:'bottom',
+            title:'Zapami\u0119taj mnie.'
+         });
+        });
+        
+        
+    });
+    
+</script>
+<style type="text/css">
+    #email{
+        width: 150px
+    }
+    #haslo{
+        width: 150px
+    }
+    .form-inline{
+        margin-top: 5px;
+        margin-bottom: 0px;       
+    }
+    
+
+</style>

@@ -1,0 +1,304 @@
+<script type="text/javascript">
+    function max(){
+       return <?= $this->ilosc; ?>; 
+    }
+    function up(){
+        if(typeof up.a == 'undefined')up.a=0;
+        up.a++;
+        return up.a;
+    }
+    function down(){
+        if(typeof this.a == 'undefined')this.a=max();
+        this.a--;
+        return this.a;
+    }
+    function dane(limitod,limitile){
+        $.ajax({
+            url:        "/public/jsondane/getlinks",
+            dataType:   "json",
+            data:       {lod: limitod,lile: limitile},
+            success:    function(data){
+                var htmltext;
+                for(var i=0;i<data.length;i++){
+                    htmltext+='<tr id="'+data[i].url+'">';
+                    htmltext+='<td>'+data[i].id+'</td>';
+                    htmltext+='<td><a href="http://'+data[i].url+'">'+data[i].url+'</a></td>';
+                    htmltext+='<td>'+data[i].link.substring(0,100)+'</td>';
+                    htmltext+='<td>';
+                    htmltext+='<button title="QRCode" class="btn btn-success btn-mini" id="'+data[i].url+'"><i class="icon-qrcode icon-white"></i></button>';
+                    htmltext+='<button title="Usu\u0144" class="btn btn-danger btn-mini" id="'+data[i].url+'"><i class="icon-trash icon-white"></i></button>';
+                    htmltext+='<button title="Dane" class="btn btn-info btn-mini" id="'+data[i].url+'"><i class="icon-list-alt icon-white"></i></button>';
+                    htmltext+='</td>';
+                    htmltext+='</tr>';
+                }
+                $("#tb-data").html(htmltext);
+            }
+            
+        })
+    }
+    function del(id){
+        $.ajax({
+            url:        "/public/jsondane/dellink",
+            data:       {id: id},
+            success:    function(data){}
+        });
+    }
+    function szukaj(data){
+        $("#tb-data").remove();
+        $("#linki").append('<tbody id="tb-data"></tbody>');
+        $.ajax({
+            url:        "/public/jsondane/searchlink",
+            data:       {data: data},
+            dataType:   'json',
+            success:    function(data){
+                var htmltext;
+                for(var i=0;i<data.length;i++){
+                    htmltext+='<tr id="'+data[i].url+'">';
+                    htmltext+='<td>'+data[i].id+'</td>';
+                    htmltext+='<td><a href="http://'+data[i].url+'">'+data[i].url+'</a></td>';
+                    htmltext+='<td>'+data[i].link.substring(0,100)+'</td>';
+                    htmltext+='<td>';
+                    htmltext+='<button title="QRCode" class="btn btn-success btn-mini" id="'+data[i].url+'"><i class="icon-qrcode icon-white"></i></button>';
+                    htmltext+='<button title="Usu\u0144" class="btn btn-danger btn-mini" id="'+data[i].url+'"><i class="icon-trash icon-white"></i></button>';
+                    htmltext+='<button title="Dane" class="btn btn-info btn-mini" id="'+data[i].url+'"><i class="icon-list-alt icon-white"></i></button>';
+                    htmltext+='</td>';
+                    htmltext+='</tr>';
+                }
+                $("#tb-data").html(htmltext);
+            }
+        });
+    }
+
+    
+    $().ready(function(){
+        var ii = 0;
+        var jj = max();
+        $(".aa").text(ii+' '+jj+' '+max());
+        
+        if(ii==0)$('#back').hide();
+        if(jj<21)$('.pager').hide();
+    
+        //pobieranie danych
+        dane(0,20);
+        //obsługa trzech przycisków
+        $(this).on('click','button',function(){
+            var t       = $(this);
+            var title   = t.attr('title');
+            var i       = t.attr('id');
+            if(title == 'QRCode'){
+                $("#bodypop").append('<a id="aqr" href="http://'+i+'">'+i+'</a>');
+                $("#bodypop").append('<img id="imgqr" src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=http://'+i+'"/>');
+                $("#qrcode").modal('show');
+            }
+            if(title == 'Usu\u0144'){
+                del(i);
+               // $("#tb-data").remove();
+               // $("#linki").append('<tbody id="tb-data"></tbody>');
+                dane(0,0);
+            }
+            if(title == 'Dane'){
+                $.ajax({
+                    url:        "/public/jsondane/count",
+                    data:       {id: i},
+                    dataType:   'json',
+                    success:    function(data){
+                        var html = '<p>Liczba wszystkich odwiedzin: <strong>'+data.countall+'</strong></p>';
+                        html += '<p>Liczba uinikalnych odwiedzin: <strong>'+data.countuq+'</strong></p>';
+                        $("#danes").html(html);
+                        //poczatek
+                        $.ajax({
+                            url:        "/public/jsondane/mount",
+                            data:       {id: i},
+                            dataType:   "json",
+                            success:    function(a){
+                                
+                                    //alert (a.all)
+                                    
+                                    chart = new Highcharts.Chart({
+                                          chart: {
+                                              renderTo: 'wykres',
+                                              type: 'column'
+                                          },
+                                          title: {
+                                              text: 'Liczba odwiedziń'
+                                          },
+                                          subtitle: {
+                                              text: 'w roku 2012'
+                                          },
+                                          xAxis: {
+                                              categories: [
+                                                  'Sty',
+                                                  'Lut',
+                                                  'Mar',
+                                                  'Kwi',
+                                                  'Maj',
+                                                  'Cze',
+                                                  'Lip',
+                                                  'Sie',
+                                                  'Wrz',
+                                                  'Paź',
+                                                  'Lis',
+                                                  'Gru'
+                                              ]
+                                          },
+                                          yAxis: {
+                                              min: 0,
+                                              title: {
+                                                  text: 'Liczba'
+                                              }
+                                          },
+                                          legend: {
+                                              layout: 'vertical',
+                                              backgroundColor: '#FFFFFF',
+                                              align: 'left',
+                                              verticalAlign: 'top',
+                                              x: 100,
+                                              y: 70,
+                                              floating: true,
+                                              shadow: true
+                                          },
+                                          tooltip: {
+                                              formatter: function() {
+                                                  return ''+
+                                                      this.x +': '+ this.y ;
+                                              }
+                                          },
+                                          plotOptions: {
+                                              column: {
+                                                  pointPadding: 0.2,
+                                                  borderWidth: 0
+                                              }
+                                          },
+                                              series: [{
+                                              name: 'Wszystkie',
+                                              data: a.all
+                              
+                                          },{
+                                              name: 'Unikalne',
+                                              data: a.unique
+                              
+                                          }]
+                                    });
+                                
+                            }
+                        });
+                        //koniec
+                    }
+            
+                });
+                $("#statystyki").modal('show');
+            } //end if dane
+        });
+        //obsługa zdarzenie ukrycia kodu qr
+        $("#qrcode").on('hidden',function(){
+            $("#aqr").remove();
+            $("#imgqr").remove();
+        });
+        $("#statystyki").on('hidden',function(){
+            chart.destroy();
+			
+            
+            
+            //o.series[1].data = null;
+        });
+        //obsługa input szukaj
+        $("#szukaj").keyup(function(){
+            var data    = $("#szukaj").val();
+            if(data){
+                szukaj(data);
+                $(".pager").hide();
+            }
+            else{
+               // $("#tb-data").remove();
+               // $("#linki").append('<tbody id="tb-data"></tbody>');
+                dane(0,0);
+                }
+        });
+        $(this).on('click','a',function(){
+            var i       = $(this).attr('id');
+            if(i == 'next'){
+               ii+=20;
+               jj-=20;
+               dane(ii,20);
+               if(ii+20>=max())$('#next').hide();
+               if(ii>0)$("#back").show();
+               
+            }
+            if(i == 'back'){
+               // $("#back").show();
+               ii-=20;
+               jj+=20;
+               //alert(ii+''+jj);
+               dane(ii,20);
+               if(ii<max())$('#next').show();
+               if(ii<=0)$("#back").hide();
+               
+            }
+        });
+   //wykres poczatek
+   var chart;
+   
+   //wykres koniec
+        
+    });
+
+</script>            
+<div class="container-fluid">
+    
+   <?   $this->formszukaj->setAttrib('class', 'form-search');
+        $this->formszukaj->szukaj->setAttrib('placeholder', 'Szukaj');
+        $this->formszukaj->szukaj->setAttrib('id','szukaj');
+        
+        echo $this->formszukaj;
+        
+   ?>
+   <table id="linki" class="table table-striped table-bordered table-condensed">
+       <thead>
+          <th>Lp.</th>
+          <th>Skrucony link.</th>
+          <th>Pełny adres</th>
+          <th class="span2 offset11">Opcje</th>
+       </thead>
+       <tbody id="tb-data">
+       </tbody>
+
+
+   </table>
+   <ul class="pager">
+        <li class="previous">
+            <a href="#" id="back">&larr; Poprzednie</a>
+        </li>
+        <li class="next">
+            <a href="#" id="next">Następne &rarr;</a>
+        </li>
+</ul>
+            
+
+</div>
+
+<div class="modal fade hide" id="qrcode" style="display: none; width: 340px;">
+  <div class="modal-header">
+    <a class="close btn btn-primary" data-dismiss="modal">×</a>
+    <h3>Adres w postacji QRCode</h3>
+  </div>
+  <div class="modal-body" id="bodypop">
+    
+  </div>
+  
+</div>
+
+<div class="modal fade hide " id="statystyki" style="display: none;">
+  <div class="modal-header ">
+    <a class="close btn btn-primary" data-dismiss="modal">×</a>
+    <h3>Kilka informacji</h3>
+  </div>
+  <div class="modal-body" id="bodys">
+      <div id="danes"></div>
+      <div id="wykres" style="min-width: 400px; height: 350px; margin: 0 auto"></div>
+    
+  </div>
+  
+</div>
+
+
+

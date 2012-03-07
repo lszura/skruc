@@ -1,0 +1,33 @@
+<script type="text/javascript">
+$().ready(function(){
+   $("#zmianahasla").validate({
+      rules:{
+          haslo1:{
+                required: true,
+                minlength: 6
+            },
+           haslo2:{
+                equalTo: "#haslo1"                
+            }
+      },
+      messages:{
+          haslo1:{
+                required: "<i class='icon-exclamation-sign'></i><font color='red'> Wpisz has\u0142o.</font>",
+                minlength: "<i class='icon-exclamation-sign'></i><font color='red'> Has\u0142o powino zawierać minimum 6 znaków.</font>"
+                },
+          haslo2:{
+                equalTo: "<i class='icon-exclamation-sign'></i><font color='red'> Wpisz takie samo has\u0142o.</font>"
+                }
+      }
+   }); 
+});
+
+</script>
+
+<? 
+if($this->form_zmiana_hasla){
+    $this->form_zmiana_hasla->setAttrib('id', 'zmianahasla');
+    $this->form_zmiana_hasla->submit->setAttrib('class', 'btn-primary');
+}
+echo $this->form_zmiana_hasla;
+?>
