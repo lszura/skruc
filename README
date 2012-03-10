@@ -1,0 +1,25 @@
+------------------------------------------------------------------------------------
+Projekt "Skruc link url"
+------------------------------------------------------------------------------------
+
+--------------
+Opis
+--------------
+
+Głównym celem aplikacji jest skracanie długich adresów url
+
+Zajerestrowany użytkownik ma możliwość:
+
+-Wglądu do bazy swoih linków
+-Usuwania adresów
+-Generowania kodów QR na urządzenia mobilne
+-Podgląd aktywności danego adresu.
+
+-------------
+Instalacja
+-------------
+
+1. W bazie Mysql utwórz tabele z pliku baza.sql
+2. Skopiuj wszystkie pliki na serwer z obsługa php
+3. Do katalogu library skopjuj pliki biblioteki Zend Framework
+4. W pliku application/configs/application.ini skonfiguruj połączenie z bazą Mysql
