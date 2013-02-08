@@ -1,4 +1,4 @@
-<h1>Projekt "Skruc link url"</h1>
+<h1>Projekt "Skróc link url"</h1>
 <h2> Opis </h2>
 <p> Głównym celem aplikacji jest skracanie długich adresów url</p>
 <p> Zajerestrowany użytkownik ma możliwość:
